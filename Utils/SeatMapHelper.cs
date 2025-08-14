@@ -121,10 +121,10 @@ public class SeatMapHelper
         int availableSeats = totalSeats - takenSeats;
         double occupancyPercentage = totalSeats > 0 ? (double)takenSeats / totalSeats * 100 : 0;
 
-        Console.Write("\n📊 Seat Statistics:\n");
+        Console.Write("\n Seat Statistics:\n");
         Console.Write("   Total Seats: {0}\n", totalSeats);
         Console.Write("   Available: {0}\n", availableSeats);
         Console.Write("   Taken: {0}\n", takenSeats);
-        Console.Write("   Occupancy: {0:F1}%\n", occupancyPercentage);
+        Console.Write("   Percentage reserved: {0:F1}%\n\n", occupancyPercentage);
     }
 }
