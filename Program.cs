@@ -10,6 +10,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        Console.ReadKey();
         // init db
         CinemaDatabaseInitializer dbInitializer = new CinemaDatabaseInitializer();
         dbInitializer.InitializeDatabase();
