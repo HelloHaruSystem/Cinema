@@ -43,11 +43,11 @@ public class ViewUserBookingsCommand : BaseCommand
 
     private void DisplayUserBookings()
     {
-        string header = AppConfig.CenterText($"BOOKINGS FOR {_authService.CurrentUser.Username.ToUpper()}", AppConfig.MenuWidth);
+        string header = AppConfig.CenterText($"BOOKINGS FOR {_authService.CurrentUser?.Username?.ToUpper() ?? "USER"}", AppConfig.MenuWidth);
         Console.Write("{0}{1}{0}\n", AppConfig.BorderChar, header);
         Console.Write("{0}", AppConfig.HeaderLine);
 
-        List<(Bookings booking, Screening screening, Movie movie, Hall hall, Seat seat)> userBookings = _dataService.GetUserBookings(_authService.CurrentUser.Id);
+        var userBookings = _dataService.GetUserBookings(_authService.CurrentUser?.Id ?? throw new InvalidOperationException("User not logged in"));
 
         if (!userBookings.Any())
         {

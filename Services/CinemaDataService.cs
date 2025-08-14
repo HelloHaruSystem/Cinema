@@ -287,7 +287,7 @@ public class CinemaDataService
         {
             Bookings booking = new Bookings
             {
-                Id = Convert.ToInt32(reader["booking_id"]),
+                Id = Convert.ToInt32((long)reader["booking_id"]),
                 UserId = Convert.ToInt32(reader["user_id"]),
                 GuestName = reader["guest_name"] == DBNull.Value ? null : reader["guest_name"].ToString(),
                 GuestEmail = reader["guest_email"] == DBNull.Value ? null : reader["guest_email"].ToString(),
