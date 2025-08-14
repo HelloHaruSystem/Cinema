@@ -2,6 +2,7 @@ namespace Cinema.Commands;
 
 public interface ICommand
 {
-    public void Execute();
+    public bool? Execute();
+    string Name { get; }
     string Description { get; }
 }
