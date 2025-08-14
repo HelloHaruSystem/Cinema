@@ -1,0 +1,26 @@
+# Build artifacts
+bin/
+obj/
+
+# Ide files
+[Vv]s/
+.idea/
+.vscode/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Temporary files
+*.tmp
+*.log
+*.cache
+
+# NuGet packages
+*.nupkg
+packages/
+
+# Local config files
+appsettings.Development.json
