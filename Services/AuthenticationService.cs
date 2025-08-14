@@ -82,14 +82,14 @@ public class AuthenticationService
             using SqliteDataReader reader = command.ExecuteReader();
             if (reader.Read())
             {
-                string storedHash = reader.GetString(0);
+                string storedHash = reader.GetString(2);
                 
                 if (_passwordService.VerifyPassword(password, storedHash))
                 {
                     CurrentUser = new Users
                     {
-                        Id = reader.GetInt32(1),
-                        Username = reader.GetString(2),
+                        Id = reader.GetInt32(0),
+                        Username = reader.GetString(1),
                         PasswordHash = storedHash,
                         Role = reader.GetString(3)
                     };

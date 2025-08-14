@@ -96,7 +96,7 @@ public class BookSeatsUserCommand : BaseCommand
         if (result.IsSuccessful)
         {
             Console.Write("\nAll bookings successful!\n");
-            Console.Write("Movie: {0}\n", _dataService.GetMovieById(screening.MovieId));
+            Console.Write("Movie: {0}\n", _dataService.GetMovieTitle(screening.MovieId));
             Console.Write("Time: {0:dd-MM-yyyy HH:mm}\n", screening.StartTime);
             Console.Write("Seats booked: \n");
             foreach (int[] selectedSeat in result.SuccessfulSeats)

@@ -23,15 +23,15 @@ public class SubMenuCommand : BaseCommand
         while (continueRunningSubMenu == true)
         {
             continueRunningSubMenu = _subMenu.Run();
-            
+        
             // if submenu returned null quit the app
             if (continueRunningSubMenu == null)
             {
                 return null;
             }
         }
-        
-        // return to parent menu
-        return continueRunningSubMenu;
+    
+
+        return true;
     }
 }
