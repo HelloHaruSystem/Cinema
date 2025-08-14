@@ -47,6 +47,38 @@ public class BookingService
         result.IsSuccessful = result.FailedSeats.Count == 0;
         return result;
     }
+    
+    public BookingResult BookMultipleSeatsForUser(int screeningId, List<int[]> selectedSeats, 
+        int[,] seatIds, int userId)
+    {
+        BookingResult result = new BookingResult();
+        _repository.CleanupExpiredBlocks();
+
+        foreach (int[] selectedSeat in selectedSeats)
+        {
+            int seatId = seatIds[selectedSeat[0] - 1, selectedSeat[1] - 1];
+        
+            if (seatId == 0)
+            {
+                result.FailedSeats.Add($"Row {selectedSeat[0]}, Seat {selectedSeat[1]} (Invalid seat ID)");
+                continue;
+            }
+        
+            bool success = _repository.BookSeat(screeningId, seatId, null, null, userId);
+        
+            if (success)
+            {
+                result.SuccessfulSeats.Add(selectedSeat);
+            }
+            else
+            {
+                result.FailedSeats.Add($"Row {selectedSeat[0]}, Seat {selectedSeat[1]}");
+            }
+        }
+    
+        result.IsSuccessful = result.FailedSeats.Count == 0;
+        return result;
+    }
 
     public bool BookSingleSeat(int screeningId, int seatId, string guestName, string guestEmail)
     {

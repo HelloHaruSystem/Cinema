@@ -138,6 +138,70 @@ public class UserInputHandler
         
         return result;
     }
+
+    public string GetString()
+    {
+        bool validInput = false;
+        string result = "";
+
+        while (!validInput)
+        {
+            result = Console.ReadLine() ?? string.Empty;
+
+            if (result.Length == 0)
+            {
+                Console.Write("Invalid input. you need to input something\n> ");
+            }
+            else
+            {
+                validInput = true;
+            }
+        }
+        
+        return result;
+    }
+
+    public string GetPassword()
+    {
+        bool validInput = false;
+        string result = "";
+
+        while (!validInput)
+        {
+            result = "";
+            ConsoleKeyInfo key;
+
+            do
+            {
+                key = Console.ReadKey(true);
+
+                if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                {
+                    result += key.KeyChar;
+                    Console.Write("*");
+                }
+                else if (key.Key == ConsoleKey.Backspace && result.Length > 0)
+                {
+                    result = result.Substring(0, result.Length - 1);
+                    Console.Write("\b \b");
+                }
+            }
+            while (key.Key != ConsoleKey.Enter);
+
+            Console.Write("\n");
+
+            if (result.Length == 0)
+            {
+                Console.Write("Invalid input. you need to input something\n> ");
+            }
+            else
+            {
+                validInput = true;
+            }
+        }
+    
+        return result;
+    }
     
     public void Clear()
     {

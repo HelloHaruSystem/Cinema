@@ -30,4 +30,7 @@ public static class AppConfig
     
     // db stuff 
     public static readonly string ConnectionString = "Data Source=Data/cinema.db";
+    
+    // auth stuff
+    public static readonly int SaltRounds = 12;
 }

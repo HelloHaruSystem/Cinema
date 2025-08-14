@@ -256,6 +256,85 @@ public class CinemaDataService
         return null;
     }
     
+    public List<(Bookings booking, Screening screening, Movie movie, Hall hall, Seat seat)> GetUserBookings(int userId)
+    {
+        List<(Bookings booking, Screening screening, Movie movie, Hall hall, Seat seat)> bookings = new();
+        
+        using SqliteConnection connection = new SqliteConnection(_connectionString);
+        connection.Open();
+        
+        SqliteCommand command = connection.CreateCommand();
+        command.CommandText = @"
+            SELECT 
+                b.id as booking_id, b.user_id, b.guest_name, b.guest_email, 
+                b.screening_id, b.seat_id, b.booking_time,
+                s.id as screening_id2, s.movie_id, s.screen_hall_id, s.start_time, s.price,
+                m.id as movie_id2, m.title, m.description, m.duration_minutes,
+                sh.id as hall_id, sh.name as hall_name, sh.rows, sh.seats_per_row,
+                se.id as seat_id2, se.screen_hall_id as seat_hall_id, se.row_number, se.seat_number
+            FROM bookings b
+            JOIN screenings s ON b.screening_id = s.id
+            JOIN movies m ON s.movie_id = m.id
+            JOIN screen_halls sh ON s.screen_hall_id = sh.id
+            JOIN seats se ON b.seat_id = se.id
+            WHERE b.user_id = @userId
+            ORDER BY b.booking_time DESC";
+        
+        command.Parameters.AddWithValue("@userId", userId);
+        
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            Bookings booking = new Bookings
+            {
+                Id = Convert.ToInt32(reader["booking_id"]),
+                UserId = Convert.ToInt32(reader["user_id"]),
+                GuestName = reader["guest_name"] == DBNull.Value ? null : reader["guest_name"].ToString(),
+                GuestEmail = reader["guest_email"] == DBNull.Value ? null : reader["guest_email"].ToString(),
+                ScreeningId = Convert.ToInt32(reader["screening_id"]),
+                SeatId = Convert.ToInt32(reader["seat_id"]),
+                BookingTime = DateTime.Parse(reader["booking_time"].ToString())
+            };
+
+            Screening screening = new Screening
+            {
+                Id = Convert.ToInt32(reader["screening_id2"]),
+                MovieId = Convert.ToInt32(reader["movie_id"]),
+                ScreenHallId = Convert.ToInt32(reader["screen_hall_id"]),
+                StartTime = DateTime.Parse(reader["start_time"].ToString()),
+                Price = Convert.ToDouble(reader["price"])
+            };
+
+            Movie movie = new Movie
+            {
+                Id = Convert.ToInt32(reader["movie_id2"]),
+                Title = reader["title"].ToString(),
+                Description = reader["description"] == DBNull.Value ? null : reader["description"].ToString(),
+                DurationMinutes = Convert.ToInt32(reader["duration_minutes"])
+            };
+
+            Hall hall = new Hall
+            {
+                Id = Convert.ToInt32(reader["hall_id"]),
+                Name = reader["hall_name"].ToString(),
+                Rows = Convert.ToInt32(reader["rows"]),
+                SeatsPerRow = Convert.ToInt32(reader["seats_per_row"])
+            };
+
+            Seat seat = new Seat
+            {
+                Id = Convert.ToInt32(reader["seat_id2"]),
+                ScreenHallId = Convert.ToInt32(reader["seat_hall_id"]),
+                RowNumber = Convert.ToInt32(reader["row_number"]),
+                SeatNumber = Convert.ToInt32(reader["seat_number"])
+            };
+
+            bookings.Add((booking, screening, movie, hall, seat));
+        }
+        
+        return bookings;
+    }
+    
     public string GetMovieTitle(int movieId)
     {
         Movie? movie = GetMovieById(movieId);
