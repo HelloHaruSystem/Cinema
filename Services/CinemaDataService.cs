@@ -129,14 +129,14 @@ public class CinemaDataService
         {
             Seat seat = new Seat
             {
-                Id = reader.GetInt32(1),
-                ScreenHallId = reader.GetInt32(2),
-                RowNumber = reader.GetInt32(3),
-                SeatNumber = reader.GetInt32(4)
+                Id = reader.GetInt32(0),
+                ScreenHallId = reader.GetInt32(1),
+                RowNumber = reader.GetInt32(2),
+                SeatNumber = reader.GetInt32(3)
             };
 
-            bool isBooked = reader.GetInt32(5) == 1;
-            bool isBlocked = reader.GetInt32(6) == 1;
+            bool isBooked = reader.GetInt32(4) == 1;
+            bool isBlocked = reader.GetInt32(5) == 1;
 
             seatsWithStatus.Add((seat, isBooked, isBlocked));
         }
@@ -228,7 +228,7 @@ public class CinemaDataService
         command.ExecuteNonQuery();
     }
     
-    public Movie GetMovieById(int movieId)
+    public Movie? GetMovieById(int movieId)
     {
         using SqliteConnection connection = new SqliteConnection(_connectionString);
         connection.Open();

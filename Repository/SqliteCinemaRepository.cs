@@ -41,7 +41,7 @@ public class SqliteCinemaRepository : ICinemaRepository
     
     public bool BlockSeat(int screeningId, int seatId, int minutesToBlock = 5)
     {
-        throw new NotImplementedException();
+        return _dataService.BlockSeat(screeningId, seatId, minutesToBlock);
     }
     
     public int? GetSeatId(int hallId, int rowNumber, int seatNumber)
@@ -51,6 +51,6 @@ public class SqliteCinemaRepository : ICinemaRepository
     
     public void CleanupExpiredBlocks()
     {
-        throw new NotImplementedException();
+        _dataService.CleanupExpiredBlocks();
     }
 }

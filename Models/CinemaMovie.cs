@@ -17,9 +17,9 @@ public class CinemaMovie
     
     public void DisplayDetails()
     {
-        Console.Write($"Movie: {0}\n", Title);
-        Console.Write("Duration: {0} minutes ({1}h {2}m)\n", DurationMinutes,  DurationMinutes / 60, DurationMinutes % 6);
-        Console.Write($"Description: {Description}\n");
+        Console.Write("Movie: {0}\n", Title);
+        Console.Write("Duration: {0} minutes ({1}h {2}m)\n", DurationMinutes,  DurationMinutes / 60, DurationMinutes % 60);
+        Console.Write("Description: {0}\n",  Description);
     }
 
     public override string ToString()
