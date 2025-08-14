@@ -33,7 +33,7 @@ public abstract class Menu
         {
             string optionText = $"{AppConfig.BorderChar} {kvp.Key}: ";
             int remainingSpace = AppConfig.MenuFullWidth - optionText.Length - AppConfig.RightPadding;
-            string paddedName = kvp.Value.Name.PadLeft(remainingSpace - 1);
+            string paddedName = kvp.Value.Name.PadLeft(remainingSpace);
             sb.Append($"{optionText}{paddedName} {AppConfig.BorderChar}\n");
         }
         
