@@ -129,14 +129,14 @@ public class CinemaDataService
         {
             Seat seat = new Seat
             {
-                Id = Convert.ToInt32(reader.GetInt32(0)),
-                ScreenHallId = Convert.ToInt32(reader.GetInt32(1)),
-                RowNumber = Convert.ToInt32(reader.GetInt32(2)),
-                SeatNumber = Convert.ToInt32(reader.GetInt32(3)),
+                Id = Convert.ToInt32(reader.GetInt64(0)),
+                ScreenHallId = Convert.ToInt32(reader.GetInt64(1)),
+                RowNumber = Convert.ToInt32(reader.GetInt64(2)),
+                SeatNumber = Convert.ToInt32(reader.GetInt64(3)),
             };
 
-            bool isBooked = Convert.ToInt32(reader.GetInt32(4)) == 1;
-            bool isBlocked = Convert.ToInt32(reader.GetInt32(5)) == 1;
+            bool isBooked = Convert.ToInt32(reader.GetInt64(4)) == 1;
+            bool isBlocked = Convert.ToInt32(reader.GetInt64(5)) == 1;
 
             seatsWithStatus.Add((seat, isBooked, isBlocked));
         }

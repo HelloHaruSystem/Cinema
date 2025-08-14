@@ -88,7 +88,7 @@ public class AuthenticationService
                 {
                     CurrentUser = new Users
                     {
-                        Id = reader.GetInt32(0),
+                        Id = Convert.ToInt32(reader.GetInt64(0)),
                         Username = reader.GetString(1),
                         PasswordHash = storedHash,
                         Role = reader.GetString(3)
@@ -125,7 +125,7 @@ public class AuthenticationService
         command.CommandText = "SELECT COUNT(*) FROM users WHERE username = @username";
         command.Parameters.AddWithValue("@username", username);
 
-        long count = (long)command.ExecuteScalar();
+        long count = (long)(command.ExecuteScalar() ?? 0);
         return count > 0;
     }
 }

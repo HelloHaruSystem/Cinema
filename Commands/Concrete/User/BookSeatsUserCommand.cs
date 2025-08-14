@@ -27,7 +27,7 @@ public class BookSeatsUserCommand : BaseBookingCommand
     {
         // Perform the booking for authenticated user
         BookingResult result = _bookingService.BookMultipleSeatsForUser(
-            screening.Id, selectedSeats, seatIds, _authService.CurrentUser.Id);
+            screening.Id, selectedSeats, seatIds, _authService.CurrentUser?.Id ?? throw new InvalidOperationException("User not logged in"));
 
         // Display the result
         string bookedBy = _authService.CurrentUser.Username;
