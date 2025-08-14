@@ -3,6 +3,10 @@ using Cinema.Entities;
 
 namespace Cinema.UserInterface;
 
+/// <summary>
+/// Handles all user input operations with validation.
+/// Provides safe methods for getting different types of input from the console.
+/// </summary>
 public class UserInputHandler
 {
     public UserInputHandler()
@@ -10,6 +14,12 @@ public class UserInputHandler
         
     }
 
+    /// <summary>
+    /// Gets a menu choice from the user within a specified range.
+    /// </summary>
+    /// <param name="min">Minimum valid choice</param>
+    /// <param name="max">Maximum valid choice</param>
+    /// <returns>Valid menu choice within the specified range</returns>
     public int GetMenuChoice(int min, int max)
     {
         bool validInput = false;
@@ -38,6 +48,12 @@ public class UserInputHandler
         return choice;
     }
     
+    /// <summary>
+    /// Gets a menu choice with option to cancel (return 0).
+    /// </summary>
+    /// <param name="min">Minimum valid choice</param>
+    /// <param name="max">Maximum valid choice</param>
+    /// <returns>Valid choice or null if user cancelled</returns>
     public int? GetMenuChoiceWithCancel(int min, int max)
     {
         bool validInput = false;
@@ -70,6 +86,10 @@ public class UserInputHandler
         return choice;
     }
 
+    /// <summary>
+    /// Gets guest information for booking (name and email).
+    /// </summary>
+    /// <returns>Array with [0] = name, [1] = email</returns>
     public string[] GetGuestInformation()
     {
         string guestName = "";
@@ -118,6 +138,11 @@ public class UserInputHandler
         return result;
     }
     
+    /// <summary>
+    /// Gets seat selection from user for a specific hall.
+    /// </summary>
+    /// <param name="hall">The hall to select seats from</param>
+    /// <returns>Array with [0] = row number, [1] = seat number</returns>
     public int[] GetSeatSelection(Hall hall)
     {
         int row;
@@ -138,7 +163,11 @@ public class UserInputHandler
         
         return result;
     }
-
+    
+    /// <summary>
+    /// Gets a non-empty string from the user.
+    /// </summary>
+    /// <returns>Non-empty string input</returns>
     public string GetString()
     {
         bool validInput = false;
@@ -161,6 +190,10 @@ public class UserInputHandler
         return result;
     }
 
+    /// <summary>
+    /// Gets a password with hidden input (shows * characters).
+    /// </summary>
+    /// <returns>Password string</returns>
     public string GetPassword()
     {
         bool validInput = false;
@@ -203,6 +236,9 @@ public class UserInputHandler
         return result;
     }
     
+    /// <summary>
+    /// Clears the console screen.
+    /// </summary>
     public void Clear()
     {
         Console.Clear();
