@@ -38,7 +38,7 @@ public class ScreeningHelper
         for (int i = 0; i < screenings.Count; i++)
         {
             Screening screening = screenings[i];
-            string movieTitle = GetMovieTitle(screening.MovieId);
+            string movieTitle = _dataService.GetMovieTitle(screening.MovieId);
             Console.Write("{0}. {1}\n", i + 1,  movieTitle);
             Console.Write("{0:dd-MM-yyyy HH:mm} |   {1:F2} DKK |   Hall {2}\n\n",
                 screening.StartTime, screening.Price, screening.ScreenHallId);
@@ -58,17 +58,11 @@ public class ScreeningHelper
     
     public void DisplayScreeningInfo(Screening screening)
     {
-        string movieTitle = GetMovieTitle(screening.MovieId);
+        string movieTitle = _dataService.GetMovieTitle(screening.MovieId);
         
         Console.Write("\nMovie: {0}\n", movieTitle);
         Console.Write("Date & Time: {0:dd-MM-yyyy HH:mm}\n", screening.StartTime);
         Console.Write("Price: {0:F0} DKK per seat\n", screening.Price);
         Console.Write("Hall: {0}\n", screening.ScreenHallId);
-    }
-
-    private string GetMovieTitle(int movieId)
-    {
-        Movie? movie = _dataService.GetMovieById(movieId);
-        return movie?.Title ?? $"Movie {movieId}";
     }
 }

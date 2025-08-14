@@ -130,7 +130,7 @@ public class BookSeatsCommand : BaseCommand
         if (allSuccessful)
         {
             Console.Write("\nAll bookings successful!\n");
-            Console.Write("Movie: {0}\n", GetMovieTitle(screening.MovieId));
+            Console.Write("Movie: {0}\n", _dataService.GetMovieTitle(screening.MovieId));
             Console.Write("Time: {0:dd-MM-yyyy HH:mm}\n", screening.StartTime);
             Console.Write("Seats booked: \n");
             foreach (int[] selectedSeat in selectedSeats)
@@ -180,11 +180,5 @@ public class BookSeatsCommand : BaseCommand
         }
         
         return result;
-    }
-
-    private string GetMovieTitle(int movieId)
-    {
-        Movie? movie = _dataService.GetMovieById(movieId);
-        return movie?.Title ?? $"Movie {movieId}";
     }
 }

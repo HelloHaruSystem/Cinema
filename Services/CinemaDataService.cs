@@ -255,4 +255,10 @@ public class CinemaDataService
 
         return null;
     }
+    
+    public string GetMovieTitle(int movieId)
+    {
+        Movie? movie = GetMovieById(movieId);
+        return movie?.Title ?? $"Movie {movieId}";
+    }
 }
