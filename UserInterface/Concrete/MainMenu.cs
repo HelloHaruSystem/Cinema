@@ -6,6 +6,10 @@ using Cinema.Utils;
 
 namespace Cinema.UserInterface.Concrete;
 
+/// <summary>
+/// Main application menu for guest users and entry point to the system.
+/// Handles navigation between guest functionality and user authentication.
+/// </summary>
 public class MainMenu : Menu
 {
     // services
@@ -22,6 +26,18 @@ public class MainMenu : Menu
     private readonly AuthMenu _authMenu;
     private readonly UserMenu _userMenu;
     
+    /// <summary>
+    /// Initializes the main menu with all required services and sub-menus.
+    /// </summary>
+    /// <param name="inputHandler">Handler for user input</param>
+    /// <param name="repository">Repository for data access</param>
+    /// <param name="dataService">Service for cinema data operations</param>
+    /// <param name="bookingService">Service for booking operations</param>
+    /// <param name="authService">Service for authentication</param>
+    /// <param name="seatMapHelper">Helper for seat map operations</param>
+    /// <param name="screeningHelper">Helper for screening operations</param>
+    /// <param name="authMenu">Authentication menu for login/register</param>
+    /// <param name="userMenu">Menu for logged-in users</param>
     public MainMenu(UserInputHandler inputHandler, ICinemaRepository repository, CinemaDataService dataService,
                     BookingService bookingService, AuthenticationService authService, SeatMapHelper seatMapHelper,
                     ScreeningHelper screeningHelper, AuthMenu authMenu, UserMenu userMenu)
@@ -38,6 +54,10 @@ public class MainMenu : Menu
         _authMenu = authMenu;
         _userMenu = userMenu;
     }
+    
+    /// <summary>
+    /// Gets the available commands for guest users.
+    /// </summary>
     protected override Dictionary<int, ICommand> Commands => new Dictionary<int, ICommand>()
     {
         { 1, new ViewMoviesCommand(InputHandler, _repository, _dataService) },
@@ -47,9 +67,21 @@ public class MainMenu : Menu
         { 5, new StatisticsCommand(InputHandler, _repository, _seatMapHelper,  _screeningHelper) },
         { 6, new ExitCommand(InputHandler) }
     };
+    
+    /// <summary>
+    /// Gets the maximum number of menu options.
+    /// </summary>
     protected override int MaxOptions => Commands.Count;
+    
+    /// <summary>
+    /// Gets the main menu header text.
+    /// </summary>
     protected override string MenuHeader => "CINEMA BOOKING SYSTEM";
 
+    /// <summary>
+    /// Starts the main application loop, handling transitions between main menu and user menu.
+    /// Manages the overall application flow based on user authentication status.
+    /// </summary>
     public void Start()
     {
         bool? keepRunning = true;
