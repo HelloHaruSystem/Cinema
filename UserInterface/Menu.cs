@@ -6,14 +6,14 @@ namespace Cinema.UserInterface;
 
 public abstract class Menu
 {
-    private readonly UserInputHandler _inputHandler;
-    protected abstract int MaxOptions { get;  }
+    protected readonly UserInputHandler InputHandler;
     protected abstract Dictionary<int, ICommand> Commands { get; }
+    protected abstract int MaxOptions { get;  }
     protected abstract string MenuHeader { get;  }
 
     protected Menu(UserInputHandler inputHandler)
     {
-        _inputHandler = inputHandler;
+        InputHandler = inputHandler;
     }
 
     protected virtual void Display()
@@ -56,9 +56,9 @@ public abstract class Menu
 
     protected bool? Run()
     {
-        _inputHandler.Clear();
+        InputHandler.Clear();
         Display();
-        int choice = _inputHandler.GetMenuChoice(1, MaxOptions);
+        int choice = InputHandler.GetMenuChoice(1, MaxOptions);
         return HandleChoice(choice);
     }
 }

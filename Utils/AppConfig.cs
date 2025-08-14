@@ -27,4 +27,7 @@ public static class AppConfig
             .PadLeft((width + text.Length) / 2)
             .PadRight(width);
     }
+    
+    // db stuff 
+    public static readonly string ConnectionString = "Data Source=Data/cinema.db";
 }
