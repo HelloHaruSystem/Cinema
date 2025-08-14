@@ -25,7 +25,7 @@ public class SqliteCinemaRepository : ICinemaRepository
     public List<Screening> GetScreeningsByMovie(int movieId)
     {
         return _dataService.LoadScreenings()
-            .Where(s => s.Movie.MovieId == movieId)
+            .Where(s => s.MovieId == movieId)
             .ToList();
     }
     
