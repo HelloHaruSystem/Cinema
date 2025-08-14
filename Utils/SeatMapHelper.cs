@@ -3,15 +3,29 @@ using Cinema.Services;
 
 namespace Cinema.Utils;
 
+/// <summary>
+/// Helper class for managing and displaying cinema seat layouts.
+/// Handles seat map visualization and statistics calculations.
+/// </summary>
 public class SeatMapHelper
 {
     private readonly CinemaDataService _dataService;
 
+    /// <summary>
+    /// Initializes the seat map helper.
+    /// </summary>
+    /// <param name="dataService">Service for accessing cinema data</param>
     public SeatMapHelper(CinemaDataService dataService)
     {
         _dataService = dataService;
     }
 
+    /// <summary>
+    /// Creates a 2D boolean array representing seat availability for a screening.
+    /// </summary>
+    /// <param name="screeningId">The screening ID</param>
+    /// <param name="hall">Hall information with dimensions</param>
+    /// <returns>2D array where false = available, true = taken/blocked</returns>
     public bool[,] CreateSeatLayoutArray(int screeningId, Hall hall)
     {
         // false = available, true = taken
@@ -34,6 +48,12 @@ public class SeatMapHelper
         return seatLayout;
     }
     
+    /// <summary>
+    /// Creates a 2D array mapping seat positions to their database IDs.
+    /// </summary>
+    /// <param name="screeningId">The screening ID</param>
+    /// <param name="hall">Hall information with dimensions</param>
+    /// <returns>2D array with seat IDs at their corresponding positions</returns>
     public int[,] CreateSeatIdArray(int screeningId, Hall hall)
     {
         int[,] seatIds = new int[hall.Rows, hall.SeatsPerRow];
@@ -55,6 +75,11 @@ public class SeatMapHelper
         return seatIds;
     }
     
+    /// <summary>
+    /// Displays a visual seat map in the console with color coding.
+    /// </summary>
+    /// <param name="hall">Hall information</param>
+    /// <param name="seatLayout">2D array of seat availability</param>
     public void DisplaySeatMapWithArray(Hall hall, bool[,] seatLayout)
     {
         Console.Write("\nSeat Map for {0}\n", hall.Name);
@@ -98,6 +123,13 @@ public class SeatMapHelper
         }
     }
     
+    /// <summary>
+    /// Counts the number of taken seats in a seat layout array.
+    /// </summary>
+    /// <param name="seatLayout">2D seat availability array</param>
+    /// <param name="rows">Number of rows in the hall</param>
+    /// <param name="seatsPerRow">Number of seats per row</param>
+    /// <returns>Total number of taken seats</returns>
     public int CountTakenSeats(bool[,] seatLayout, int rows, int seatsPerRow)
     {
         int count = 0;
@@ -114,6 +146,11 @@ public class SeatMapHelper
         return count;
     }
     
+    /// <summary>
+    /// Displays seat statistics including Percentage reserved
+    /// </summary>
+    /// <param name="hall">Hall information</param>
+    /// <param name="seatLayout">Current seat availability layout</param>
     public void DisplaySeatStatistics(Hall hall, bool[,] seatLayout)
     {
         int totalSeats = hall.Rows * hall.SeatsPerRow;

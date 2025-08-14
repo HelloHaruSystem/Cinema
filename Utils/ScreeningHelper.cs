@@ -5,12 +5,22 @@ using Cinema.UserInterface;
 
 namespace Cinema.Utils;
 
+/// <summary>
+/// Helper class for screening-related operations.
+/// Handles screening selection and display functionality.
+/// </summary>
 public class ScreeningHelper
 {
     private readonly UserInputHandler _inputHandler;
     private readonly ICinemaRepository _repository;
     private readonly CinemaDataService _dataService;
 
+    /// <summary>
+    /// Initializes the screening helper.
+    /// </summary>
+    /// <param name="inputHandler">Handler for user input</param>
+    /// <param name="repository">Repository for data access</param>
+    /// <param name="dataService">Service for cinema data operations</param>
     public ScreeningHelper(UserInputHandler inputHandler, ICinemaRepository repository, CinemaDataService dataService)
     {
         _inputHandler = inputHandler;
@@ -18,6 +28,11 @@ public class ScreeningHelper
         _dataService = dataService;
     }
     
+    /// <summary>
+    /// Displays available screenings and allows user to select one.
+    /// </summary>
+    /// <param name="purpose">Optional text describing the purpose of selection</param>
+    /// <returns>Selected screening or null if cancelled</returns>
     public Screening? SelectScreening(string purpose = "")
     {
         List<Screening> screenings = _repository.GetAllScreenings()
@@ -56,6 +71,10 @@ public class ScreeningHelper
         return screenings[choice.Value - 1];
     }
     
+    /// <summary>
+    /// Displays detailed information about a screening.
+    /// </summary>
+    /// <param name="screening">The screening to display information for</param>
     public void DisplayScreeningInfo(Screening screening)
     {
         string movieTitle = _dataService.GetMovieTitle(screening.MovieId);

@@ -1,26 +1,52 @@
 namespace Cinema.Utils;
 
+/// <summary>
+/// Application configuration constants for UI layout, database, and security settings.
+/// </summary>
 public static class AppConfig
 {
     // UI stuff
-    // width of the menu content area (between border)
+    /// <summary>
+    /// Width of the menu content area (between borders).
+    /// </summary>
     public const int MenuWidth = 39;
     
-    // full width including border
+    /// <summary>
+    /// Full width including left and right borders.
+    /// </summary>
     public const int MenuFullWidth = MenuWidth + 2;
     
-    // characters used to build the menu
+    /// <summary>
+    /// Character used for menu borders.
+    /// </summary>
     public const char BorderChar = '|';
-    public const char FillChar = '=';
     
-    // padding for readability
+    /// <summary>
+    /// Character used for menu header lines.
+    /// </summary>
+    private const char FillChar = '=';
+    
+    /// // <summary>
+    /// Left padding for menu content.
+    /// </summary>
     public const int LeftPadding = 1;
+    
+    /// <summary>
+    /// Right padding for menu content.
+    /// </summary>
     public const int RightPadding = 2;
     
-    // header line format
+    /// <summary>
+    /// Pre-formatted header line for menus.
+    /// </summary>
     public static readonly string HeaderLine = $"{BorderChar}{new string(FillChar, MenuWidth)}{BorderChar}\n";
     
-    // center text in menu
+    /// <summary>
+    /// Centers text within a specified width.
+    /// </summary>
+    /// <param name="text">Text to center</param>
+    /// <param name="width">Total width to center within</param>
+    /// <returns>Centered text with padding</returns>
     public static string CenterText(string text, int width)
     {
         return text
@@ -28,9 +54,15 @@ public static class AppConfig
             .PadRight(width);
     }
     
-    // db stuff 
+    // Database configuration
+    /// <summary>
+    /// SQLite database connection string.
+    /// </summary>
     public static readonly string ConnectionString = "Data Source=Data/cinema.db";
     
-    // auth stuff
+    // Authentication configuration
+    /// <summary>
+    /// Number of salt rounds for BCrypt password hashing (higher = more secure but slower).
+    /// </summary>
     public static readonly int SaltRounds = 12;
 }
