@@ -44,7 +44,7 @@ public class MainMenu : Menu
         { 2, new BookSeatsCommand(InputHandler, _repository, _dataService, _bookingService, _seatMapHelper,  _screeningHelper) },
         { 3, new SubMenuCommand(InputHandler, _authMenu, "User Login/Register", "Login or create account") },
         { 4, new ViewSeatMapCommand(InputHandler, _repository, _seatMapHelper, _screeningHelper) },
-        { 5, new StaatisticsCommand(InputHandler, _repository, _seatMapHelper,  _screeningHelper) },
+        { 5, new StatisticsCommand(InputHandler, _repository, _seatMapHelper,  _screeningHelper) },
         { 6, new ExitCommand(InputHandler) }
     };
     protected override int MaxOptions => Commands.Count;

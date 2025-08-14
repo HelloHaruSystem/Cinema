@@ -5,13 +5,13 @@ using Cinema.Utils;
 
 namespace Cinema.Commands.Concrete;
 
-public class StaatisticsCommand : BaseCommand
+public class StatisticsCommand : BaseCommand
 {
     private readonly ICinemaRepository _repository;
     private readonly SeatMapHelper _seatMapHelper;
     private readonly ScreeningHelper _screeningHelper;
 
-    public StaatisticsCommand(UserInputHandler inputHandler, ICinemaRepository repository, 
+    public StatisticsCommand(UserInputHandler inputHandler, ICinemaRepository repository, 
         SeatMapHelper seatMapHelper, ScreeningHelper screeningHelper)
         : base(inputHandler)
     {
