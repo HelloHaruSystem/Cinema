@@ -42,7 +42,7 @@ public class ViewMoviesCommand : BaseCommand
 
         foreach (Movie movie in movies)
         {
-            Console.Write("\n {0}\n", movie.Title);
+            Console.Write("\n{0}\n", movie.Title);
             Console.Write("Duration: {0} minutes ({1}h {2}m)\n",
                 movie.DurationMinutes, movie.DurationMinutes / 60, movie.DurationMinutes % 60);
             Console.Write("Description: {0}\n",

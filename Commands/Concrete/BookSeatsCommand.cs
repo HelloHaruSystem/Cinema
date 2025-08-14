@@ -64,12 +64,12 @@ public class BookSeatsCommand : BaseCommand
 
                 if (success)
                 {
-                    Console.Write("\n Booking Successful!");
-                    Console.Write("Movie: {0}", GetMovieTitle(screening.MovieId));
-                    Console.Write("Time: {0:dd-MM-yyyy HH:mm}", screening.StartTime);
-                    Console.Write("Seat: Row {0}, Seat {1}", rowSeat[0], rowSeat[1]);
-                    Console.Write("Price: {0:F0} DKK", screening.Price);
-                    Console.Write("Name: {0}\n", guestNameAndEmail[0]);
+                    Console.Write("\nBooking Successful!\n");
+                    Console.Write("Movie: {0}\n", GetMovieTitle(screening.MovieId));
+                    Console.Write("Time: {0:dd-MM-yyyy HH:mm}\n", screening.StartTime);
+                    Console.Write("Seat: Row {0}, Seat {1}\n", rowSeat[0], rowSeat[1]);
+                    Console.Write("Price: {0:F0} DKK\n", screening.Price);
+                    Console.Write("Name: {0}\n\n", guestNameAndEmail[0]);
                 }
                 else
                 {

@@ -27,10 +27,10 @@ public class CinemaDataService
         {
             movies.Add(new Movie
             {
-                Id = reader.GetInt32(0),
+                Id = Convert.ToInt32(reader.GetInt64(0)), 
                 Title = reader.GetString(1),
                 Description = reader.IsDBNull(2) ? null : reader.GetString(2),
-                DurationMinutes = reader.GetInt32(3),
+                DurationMinutes = Convert.ToInt32(reader.GetInt64(3)) 
             });
         }
         
@@ -60,9 +60,9 @@ public class CinemaDataService
         {
             screenings.Add(new Screening
             {
-                Id = reader.GetInt32(0),
-                MovieId = reader.GetInt32(1),
-                ScreenHallId = reader.GetInt32(2),
+                Id = Convert.ToInt32(reader.GetInt64(0)),        
+                MovieId = Convert.ToInt32(reader.GetInt64(1)),   
+                ScreenHallId = Convert.ToInt32(reader.GetInt64(2)),
                 StartTime = DateTime.Parse(reader.GetString(3)),
                 Price = reader.GetDouble(4)
             });
@@ -90,10 +90,10 @@ public class CinemaDataService
 
         Hall hall = new Hall
         {
-            Id = hallReader.GetInt32(0),
+            Id = Convert.ToInt32(hallReader.GetInt64(0)),      
             Name = hallReader.GetString(1),
-            Rows = hallReader.GetInt32(2),
-            SeatsPerRow = hallReader.GetInt32(3)
+            Rows = Convert.ToInt32(hallReader.GetInt64(2)),      
+            SeatsPerRow = Convert.ToInt32(hallReader.GetInt64(3))
         };
 
         return hall;
@@ -129,14 +129,14 @@ public class CinemaDataService
         {
             Seat seat = new Seat
             {
-                Id = reader.GetInt32(0),
-                ScreenHallId = reader.GetInt32(1),
-                RowNumber = reader.GetInt32(2),
-                SeatNumber = reader.GetInt32(3)
+                Id = Convert.ToInt32(reader.GetInt32(0)),
+                ScreenHallId = Convert.ToInt32(reader.GetInt32(1)),
+                RowNumber = Convert.ToInt32(reader.GetInt32(2)),
+                SeatNumber = Convert.ToInt32(reader.GetInt32(3)),
             };
 
-            bool isBooked = reader.GetInt32(4) == 1;
-            bool isBlocked = reader.GetInt32(5) == 1;
+            bool isBooked = Convert.ToInt32(reader.GetInt32(4)) == 1;
+            bool isBlocked = Convert.ToInt32(reader.GetInt32(5)) == 1;
 
             seatsWithStatus.Add((seat, isBooked, isBlocked));
         }
@@ -215,7 +215,11 @@ public class CinemaDataService
 
         //TODO: refactor this
         var result = command.ExecuteScalar();
-        return result != null ? (int)result : null;
+        if (result != null && result != DBNull.Value)
+        {
+            return Convert.ToInt32((long)result);
+        }
+        return null;
     }
     
     public void CleanupExpiredBlocks()
@@ -242,10 +246,10 @@ public class CinemaDataService
         {
             return new Movie
             {
-                Id = reader.GetInt32(0),
+                Id = Convert.ToInt32(reader.GetInt64(0)),   
                 Title = reader.GetString(1),
                 Description = reader.IsDBNull(2) ? null : reader.GetString(2),
-                DurationMinutes = reader.GetInt32(3)
+                DurationMinutes = Convert.ToInt32(reader.GetInt64(3))
             };
         }
 
