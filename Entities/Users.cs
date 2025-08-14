@@ -2,14 +2,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cinema.Entities;
 
-public class Seat
+public class Users
 {
     [Key]
     public int Id { get; set; }
     [Required]
-    public int ScreenHallId  { get; set; }
+    public string Username { get; set; }
     [Required]
-    public int RowNumber { get; set; }
+    public string PasswordHash { get; set; }
     [Required]
-    public int SeatNumber { get; set; }
+    public string Role { get; set; }
 }
