@@ -19,11 +19,11 @@ public class MainMenu : Menu
     protected override Dictionary<int, ICommand> Commands => new Dictionary<int, ICommand>()
     {
         { 1, new ViewMoviesCommand(InputHandler, _repository, _dataService) },
-        //{ 2, new BookSeatsCommand(InputHandler, _repository, _dataService) },
+        { 2, new BookSeatsCommand(InputHandler, _repository, _dataService) },
         //{ 3, new LoginCommand(InputHandler) },
         //{ 4, new ViewSeatMapCommand(InputHandler, _repository, _dataService) },
         //{ 5, new StatisticsCommand(InputHandler, _repository, _dataService) },
-        { 2, new ExitCommand(InputHandler) }
+        { 3, new ExitCommand(InputHandler) }
     };
     protected override int MaxOptions => Commands.Count;
     protected override string MenuHeader => "CINEMA BOOKING SYSTEM";
