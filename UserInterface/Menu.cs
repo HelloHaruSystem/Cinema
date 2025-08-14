@@ -54,7 +54,7 @@ public abstract class Menu
         }
     }
 
-    protected bool? Run()
+    public bool? Run()
     {
         InputHandler.Clear();
         Display();
