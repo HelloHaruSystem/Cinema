@@ -1,9 +1,15 @@
-﻿namespace Cinema;
+﻿using Cinema.Repository;
+
+namespace Cinema;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        CinemaDatabaseInitializer dbInitializer = new();
+        dbInitializer.InitializeDatabase();
+        dbInitializer.TestDataBase();
+        
+        
     }
 }

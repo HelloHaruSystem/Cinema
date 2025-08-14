@@ -24,3 +24,6 @@ packages/
 
 # Local config files
 appsettings.Development.json
+
+# related to DB
+Data/DBML.txt
