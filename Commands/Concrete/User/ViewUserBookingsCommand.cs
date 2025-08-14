@@ -6,12 +6,23 @@ using Cinema.Utils;
 
 namespace Cinema.Commands.Concrete.User;
 
+/// <summary>
+/// Command for displaying a user's booking history with detailed information.
+/// Shows comprehensive booking details including screening status and total spending.
+/// </summary>
 public class ViewUserBookingsCommand : BaseCommand
 {
     private readonly ICinemaRepository _repository;
     private readonly CinemaDataService _dataService;
     private readonly AuthenticationService _authService;
 
+    /// <summary>
+    /// Initializes the view user bookings command.
+    /// </summary>
+    /// <param name="inputHandler">Handler for user input</param>
+    /// <param name="repository">Repository for data access</param>
+    /// <param name="dataService">Service for cinema data operations</param>
+    /// <param name="authService">Service for authentication</param>
     public ViewUserBookingsCommand(UserInputHandler inputHandler, ICinemaRepository repository, 
                                   CinemaDataService dataService, AuthenticationService authService)
         : base(inputHandler)
@@ -21,9 +32,20 @@ public class ViewUserBookingsCommand : BaseCommand
         _authService = authService;
     }
 
+    /// <summary>
+    /// Gets the command display name.
+    /// </summary>
     public override string Name => "View My Bookings";
+    
+    /// <summary>
+    /// Gets the command description.
+    /// </summary>
     public override string Description => "View all your current bookings";
 
+    /// <summary>
+    /// Executes the command to display user's booking history.
+    /// </summary>
+    /// <returns>True to continue current menu</returns>
     public override bool? Execute()
     {
         InputHandler.Clear();
@@ -41,6 +63,10 @@ public class ViewUserBookingsCommand : BaseCommand
         return true;
     }
 
+    /// <summary>
+    /// Displays formatted user booking information with grouping and statistics.
+    /// Shows bookings grouped by screening with status indicators and totals.
+    /// </summary>
     private void DisplayUserBookings()
     {
         string header = AppConfig.CenterText($"BOOKINGS FOR {_authService.CurrentUser?.Username?.ToUpper() ?? "USER"}", AppConfig.MenuWidth);

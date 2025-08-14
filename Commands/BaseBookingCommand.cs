@@ -4,8 +4,12 @@ using Cinema.Services;
 using Cinema.UserInterface;
 using Cinema.Utils;
 
-namespace Cinema.Commands.Concrete;
+namespace Cinema.Commands;
 
+/// <summary>
+/// Abstract base class for seat booking commands using the Template Method pattern.
+/// Defines the common booking flow while allowing derived classes to customize the booking process.
+/// </summary>
 public abstract class BaseBookingCommand : BaseCommand
 {
     protected readonly ICinemaRepository _repository;
@@ -14,6 +18,15 @@ public abstract class BaseBookingCommand : BaseCommand
     protected readonly SeatMapHelper _seatMapHelper;
     protected readonly ScreeningHelper _screeningHelper;
 
+    /// <summary>
+    /// Initializes the base booking command with required services.
+    /// </summary>
+    /// <param name="inputHandler">Handler for user input</param>
+    /// <param name="repository">Repository for data access</param>
+    /// <param name="dataService">Service for cinema data operations</param>
+    /// <param name="bookingService">Service for booking operations</param>
+    /// <param name="seatMapHelper">Helper for seat map operations</param>
+    /// <param name="screeningHelper">Helper for screening operations</param>
     protected BaseBookingCommand(UserInputHandler inputHandler, ICinemaRepository repository, 
         CinemaDataService dataService, BookingService bookingService, 
         SeatMapHelper seatMapHelper, ScreeningHelper screeningHelper)
@@ -26,6 +39,11 @@ public abstract class BaseBookingCommand : BaseCommand
         _screeningHelper = screeningHelper;
     }
     
+    /// <summary>
+    /// Template method defining the booking process flow.
+    /// Handles screening selection, seat map display, seat selection, and delegates final booking to derived classes.
+    /// </summary>
+    /// <returns>True to continue menu, false to exit, null to quit application</returns>
     public override bool? Execute()
     {
         InputHandler.Clear();
@@ -89,17 +107,34 @@ public abstract class BaseBookingCommand : BaseCommand
         return true;
     }
 
-    // Abstract method that derived classes must implement
+    /// <summary>
+    /// Abstract method that derived classes must implement to handle the actual booking.
+    /// Template Method pattern - the specific booking logic varies by implementation.
+    /// </summary>
+    /// <param name="selectedSeats">List of selected seat positions [row, seat]</param>
+    /// <param name="seatIds">2D array mapping positions to seat IDs</param>
+    /// <param name="screening">The selected screening</param>
+    /// <param name="numberOfSeats">Total number of seats being booked</param>
     protected abstract void ProcessBooking(List<int[]> selectedSeats, int[,] seatIds, 
                                          Screening screening, int numberOfSeats);
 
-    // Shared helper methods
+    /// <summary>
+    /// Gets the number of seats the user wants to book.
+    /// </summary>
+    /// <returns>Number of seats (1-10)</returns>
     protected int GetNumberOfSeats()
     {
         Console.Write("\nHow many seats would you like to book? (1-10): ");
         return InputHandler.GetMenuChoice(1, 10);
     }
 
+    /// <summary>
+    /// Gets a seat selection from the user with validation against already taken/selected seats.
+    /// </summary>
+    /// <param name="hall">Hall information for validation</param>
+    /// <param name="seatLayout">Current seat availability layout</param>
+    /// <param name="alreadySelected">Previously selected seats in this booking</param>
+    /// <returns>Selected seat position [row, seat]</returns>
     protected int[] GetSeatSelectionWithArray(Hall hall, bool[,] seatLayout, List<int[]> alreadySelected)
     {
         int[] result = new int[2];
@@ -128,7 +163,13 @@ public abstract class BaseBookingCommand : BaseCommand
         return result;
     }
 
-    // Shared method to display booking results
+    /// <summary>
+    /// Displays the result of a booking operation with success/failure details.
+    /// </summary>
+    /// <param name="result">Booking result object</param>
+    /// <param name="screening">The screening that was booked</param>
+    /// <param name="numberOfSeats">Total number of seats attempted</param>
+    /// <param name="bookedBy">Name/identifier of who made the booking</param>
     protected void DisplayBookingResult(BookingResult result, Screening screening, 
                                       int numberOfSeats, string bookedBy)
     {

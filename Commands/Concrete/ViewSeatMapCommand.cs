@@ -5,12 +5,22 @@ using Cinema.Utils;
 
 namespace Cinema.Commands.Concrete;
 
+/// <summary>
+/// Command for viewing seat availability map for any screening.
+/// </summary>
 public class ViewSeatMapCommand : BaseCommand
 {
     private readonly ICinemaRepository _repository;
     private readonly SeatMapHelper _seatMapHelper;
     private readonly ScreeningHelper _screeningHelper;
 
+    /// <summary>
+    /// Initializes the view seat map command.
+    /// </summary>
+    /// <param name="inputHandler">Handler for user input</param>
+    /// <param name="repository">Repository for data access</param>
+    /// <param name="seatMapHelper">Helper for seat map operations</param>
+    /// <param name="screeningHelper">Helper for screening operations</param>
     public ViewSeatMapCommand(UserInputHandler inputHandler, ICinemaRepository repository, 
         SeatMapHelper seatMapHelper, ScreeningHelper screeningHelper)
         : base(inputHandler)
@@ -20,9 +30,20 @@ public class ViewSeatMapCommand : BaseCommand
         _screeningHelper = screeningHelper;
     }
     
+    /// <summary>
+    /// Gets the command display name.
+    /// </summary>
     public override string Name => "View Seat Map";
+    
+    /// <summary>
+    /// Gets the command description.
+    /// </summary>
     public override string Description => "View current seat availability for any screening";
     
+    /// <summary>
+    /// Executes the command to display seat map for a selected screening.
+    /// </summary>
+    /// <returns>True to continue current menu</returns>
     public override bool? Execute()
     {
         InputHandler.Clear();

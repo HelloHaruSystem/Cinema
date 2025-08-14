@@ -6,11 +6,20 @@ using Cinema.Utils;
 
 namespace Cinema.Commands.Concrete;
 
+/// <summary>
+/// Command for displaying all movies and their upcoming screenings.
+/// </summary>
 public class ViewMoviesCommand : BaseCommand
 {
     private readonly ICinemaRepository _repository;
     private readonly CinemaDataService _dataService;
 
+    /// <summary>
+    /// Initializes the view movies command.
+    /// </summary>
+    /// <param name="inputHandler">Handler for user input</param>
+    /// <param name="repository">Repository for data access</param>
+    /// <param name="dataService">Service for cinema data operations</param>
     public ViewMoviesCommand(UserInputHandler inputHandler, ICinemaRepository repository, CinemaDataService dataService) 
         : base(inputHandler)
     {
@@ -18,9 +27,20 @@ public class ViewMoviesCommand : BaseCommand
         _dataService = dataService;
     }
 
+    /// <summary>
+    /// Gets the command display name.
+    /// </summary>
     public override string Name => "View currently running movies";
+    
+    /// <summary>
+    /// Gets the command description.
+    /// </summary>
     public override string Description => "Views all movies in the current cinema.";
 
+    /// <summary>
+    /// Executes the command to display movies and screenings.
+    /// </summary>
+    /// <returns>True to continue current menu</returns>
     public override bool? Execute()
     {
         Console.Clear();
@@ -31,6 +51,9 @@ public class ViewMoviesCommand : BaseCommand
         return true;
     }
 
+    /// <summary>
+    /// Displays formatted list of movies with their screening information.
+    /// </summary>
     private void DisplayMoviesAndScreenings()
     {
         string header = AppConfig.CenterText("MOVIES & SCREENINGS", AppConfig.MenuWidth);

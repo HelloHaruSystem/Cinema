@@ -4,19 +4,38 @@ using Cinema.Utils;
 
 namespace Cinema.Commands.Concrete.User;
 
+/// <summary>
+/// Command for user account registration.
+/// </summary>
 public class RegisterCommand : BaseCommand
 {
     private readonly AuthenticationService _authService;
 
+    /// <summary>
+    /// Initializes the register command.
+    /// </summary>
+    /// <param name="inputHandler">Handler for user input</param>
+    /// <param name="authService">Service for authentication</param>
     public RegisterCommand(UserInputHandler inputHandler, AuthenticationService authService)
         : base(inputHandler)
     {
         _authService = authService;
     }
     
+    /// <summary>
+    /// Gets the command display name.
+    /// </summary>
     public override string Name => "Register New Account";
+    
+    /// <summary>
+    /// Gets the command description.
+    /// </summary>
     public override string Description => "Create a new user account";
     
+    /// <summary>
+    /// Executes the registration process with validation.
+    /// </summary>
+    /// <returns>True to stay in auth menu</returns>
     public override bool? Execute()
     {
         InputHandler.Clear();
