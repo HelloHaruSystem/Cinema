@@ -7,7 +7,7 @@ public class Hall
     [Key]
     public int Id { get; set; }
     [Required]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [Required]
     public int Rows { get; set; }
     [Required]
