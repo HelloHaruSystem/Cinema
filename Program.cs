@@ -16,7 +16,7 @@ class Program
     /// <summary>
     /// Application entry point. Sets up dependency injection and starts the main menu.
     /// </summary>
-    /// <param name="args">Command line arguments (not used)</param>
+    /// <param name="args">CCommand line arguments. Use 'dbtest' to run database test only</param>
     static void Main(string[] args)
     {
         Console.Clear();
@@ -24,24 +24,34 @@ class Program
         // Initialize database
         CinemaDatabaseInitializer dbInitializer = new CinemaDatabaseInitializer();
         dbInitializer.InitializeDatabase();
-        // dbInitializer.TestDataBase();
         
-        // Initialize services and helpers (Dependency Injection pattern)
-        UserInputHandler inputHandler = new UserInputHandler();
-        SqliteCinemaRepository repository = new SqliteCinemaRepository(AppConfig.ConnectionString);
-        CinemaDataService dataService = new CinemaDataService(AppConfig.ConnectionString);
-        BookingService bookingService = new BookingService(repository, dataService);
-        PasswordService passwordService = new PasswordService();
-        AuthenticationService authService = new AuthenticationService(AppConfig.ConnectionString, passwordService);
-        SeatMapHelper seatMapHelper = new SeatMapHelper(dataService);
-        ScreeningHelper screeningHelper = new ScreeningHelper(inputHandler, repository, dataService);
+        // Check for dbtest argument
+        if (args.Length > 0 && args[0].ToLower() == "dbtest")
+        {
+            Console.Write("\nRunning database test...\n");
+            dbInitializer.TestDataBase();
+            Console.Write("\nDatabase test completed. Press any key to exit...\n");
+            Console.ReadKey();
+        }
+        else
+        {
+            // Initialize services and helpers (Dependency Injection pattern)
+            UserInputHandler inputHandler = new UserInputHandler();
+            SqliteCinemaRepository repository = new SqliteCinemaRepository(AppConfig.ConnectionString);
+            CinemaDataService dataService = new CinemaDataService(AppConfig.ConnectionString);
+            BookingService bookingService = new BookingService(repository, dataService);
+            PasswordService passwordService = new PasswordService();
+            AuthenticationService authService = new AuthenticationService(AppConfig.ConnectionString, passwordService);
+            SeatMapHelper seatMapHelper = new SeatMapHelper(dataService);
+            ScreeningHelper screeningHelper = new ScreeningHelper(inputHandler, repository, dataService);
         
-        // Create menus and start application
-        AuthMenu authMenu = new AuthMenu(inputHandler, authService);
-        UserMenu userMenu = new UserMenu(inputHandler, repository, dataService, bookingService, authService, seatMapHelper, screeningHelper);
-        MainMenu mainMenu = new MainMenu(inputHandler, repository, dataService, bookingService, authService, seatMapHelper, screeningHelper, authMenu,  userMenu);
-        mainMenu.Start();
+            // Create menus and start application
+            AuthMenu authMenu = new AuthMenu(inputHandler, authService);
+            UserMenu userMenu = new UserMenu(inputHandler, repository, dataService, bookingService, authService, seatMapHelper, screeningHelper);
+            MainMenu mainMenu = new MainMenu(inputHandler, repository, dataService, bookingService, authService, seatMapHelper, screeningHelper, authMenu,  userMenu);
+            mainMenu.Start();
 
-        Console.Clear();
+            Console.Clear();    
+        }
     }
 }
