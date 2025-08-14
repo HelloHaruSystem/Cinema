@@ -10,24 +10,25 @@ public class MainMenu : Menu
 {
     private readonly ICinemaRepository _repository;
     private readonly CinemaDataService _dataService;
+    private readonly BookingService _bookingService;
     private readonly SeatMapHelper _seatMapHelper;
     private readonly ScreeningHelper _screeningHelper;
     
     public MainMenu(UserInputHandler inputHandler, ICinemaRepository repository, CinemaDataService dataService,
-                    SeatMapHelper seatMapHelper, ScreeningHelper screeningHelper)
+                    BookingService bookingService, SeatMapHelper seatMapHelper, ScreeningHelper screeningHelper)
         : base(inputHandler)
     {
         _repository = repository;
         _dataService = dataService;
+        _bookingService = bookingService;
         _seatMapHelper = seatMapHelper;
         _screeningHelper = screeningHelper;
     }
     protected override Dictionary<int, ICommand> Commands => new Dictionary<int, ICommand>()
     {
         { 1, new ViewMoviesCommand(InputHandler, _repository, _dataService) },
-        { 2, new BookSeatsCommand(InputHandler, _repository, _dataService, _seatMapHelper,  _screeningHelper) },
+        { 2, new BookSeatsCommand(InputHandler, _repository, _dataService, _bookingService, _seatMapHelper,  _screeningHelper) },
         { 3, new ViewSeatMapCommand(InputHandler, _repository, _seatMapHelper, _screeningHelper) },
-        //{ 4, new ViewSeatMapCommand(InputHandler, _repository, _dataService) },
         //{ 5, new StatisticsCommand(InputHandler, _repository, _dataService) },
         { 4, new ExitCommand(InputHandler) }
     };

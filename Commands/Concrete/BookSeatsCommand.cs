@@ -10,15 +10,18 @@ public class BookSeatsCommand : BaseCommand
 {
     private readonly ICinemaRepository _repository;
     private readonly CinemaDataService _dataService;
+    private readonly BookingService _bookingService;
     private readonly SeatMapHelper _seatMapHelper;
     private readonly ScreeningHelper _screeningHelper;
+    
 
-    public BookSeatsCommand(UserInputHandler inputHandler, ICinemaRepository repository, CinemaDataService dataService,
-                            SeatMapHelper seatMapHelper, ScreeningHelper screeningHelper)
+    public BookSeatsCommand(UserInputHandler inputHandler, ICinemaRepository repository, CinemaDataService dataService, 
+                            BookingService bookingService, SeatMapHelper seatMapHelper, ScreeningHelper screeningHelper)
         : base (inputHandler)
     {
         _repository = repository;
         _dataService = dataService;
+        _bookingService = bookingService;
         _seatMapHelper = seatMapHelper;
         _screeningHelper = screeningHelper;
     }
@@ -104,42 +107,30 @@ public class BookSeatsCommand : BaseCommand
     private void ProcessBookings(List<int[]> selectedSeats, int[,] seatIds, Screening screening, 
                                 string[] guestInfo, int numberOfSeats)
     {
-        // try to book selected seats
-        bool allSuccessful = true;
-        List<string> failedSeats = new List<string>();
-
-        foreach (int[] selectedSeat in selectedSeats)
-        {
-            int seatId = seatIds[selectedSeat[0] - 1, selectedSeat[1] - 1];
-            if (seatId == 0)
-            {
-                failedSeats.Add($"Row {selectedSeat[0]}, Seat {selectedSeat[1]} (Invalid seat ID)");
-                allSuccessful = false;
-                continue;
-            }
-                
-            bool success = _repository.BookSeat(screening.Id, seatId, guestInfo[0],  guestInfo[1]);
-            if (!success)
-            {
-                failedSeats.Add($"Row {selectedSeat[0]}, Seat {selectedSeat[1]}");
-                allSuccessful = false;
-            }
-        }
-            
-        // Display booking results
-        if (allSuccessful)
+        BookingResult result = _bookingService.BookMultipleSeats(
+            screening.Id, selectedSeats, seatIds, guestInfo[0], guestInfo[1]);
+    
+        if (result.IsSuccessful)
         {
             Console.Write("\nAll bookings successful!\n");
             Console.Write("Movie: {0}\n", _dataService.GetMovieTitle(screening.MovieId));
             Console.Write("Time: {0:dd-MM-yyyy HH:mm}\n", screening.StartTime);
             Console.Write("Seats booked: \n");
-            foreach (int[] selectedSeat in selectedSeats)
+            foreach (int[] selectedSeat in result.SuccessfulSeats)
             {
                 Console.Write("Row {0}, Seat {1}\n", selectedSeat[0], selectedSeat[1]);
             }
             Console.Write("Total Price: {0:F2} DKK\n", screening.Price * numberOfSeats);
             Console.Write("Name: {0}\n", guestInfo[0]);
             Console.Write("Email: {0}\n\n", guestInfo[1]);
+        }
+        else
+        {
+            Console.Write("\nSome bookings failed:\n");
+            foreach (string failedSeat in result.FailedSeats)
+            {
+                Console.Write("Failed: {0}\n", failedSeat);
+            }
         }
     }
     
