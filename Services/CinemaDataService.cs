@@ -3,15 +3,27 @@ using Microsoft.Data.Sqlite;
 
 namespace Cinema.Services;
 
+/// <summary>
+/// Service class for cinema data operations using SQLite database.
+/// Handles all database interactions for movies, screenings, seats, and bookings.
+/// </summary>
 public class CinemaDataService
 {
     private readonly string _connectionString;
     
+    /// <summary>
+    /// Initializes the cinema data service.
+    /// </summary>
+    /// <param name="connectionString">SQLite database connection string</param>
     public CinemaDataService(string connectionString)
     {
         _connectionString = connectionString;
     }
 
+    /// <summary>
+    /// Loads all movies from the database.
+    /// </summary>
+    /// <returns>List of all movies</returns>
     public List<Movie> LoadMovies()
     {
         List<Movie> movies = new();
@@ -37,6 +49,10 @@ public class CinemaDataService
         return movies;
     }
 
+    /// <summary>
+    /// Loads all screenings from the database.
+    /// </summary>
+    /// <returns>List of all screenings ordered by start time</returns>
     public List<Screening> LoadScreenings()
     {
         List<Screening> screenings = new();
@@ -71,6 +87,11 @@ public class CinemaDataService
         return screenings;
     }
     
+    /// <summary>
+    /// Loads hall information for a specific screening.
+    /// </summary>
+    /// <param name="screeningId">The screening ID</param>
+    /// <returns>Hall information or null if not found</returns>
     public Hall LoadHallForScreening(int screeningId)
     {
         using SqliteConnection connection = new SqliteConnection(_connectionString);
@@ -99,6 +120,12 @@ public class CinemaDataService
         return hall;
     }
     
+    /// <summary>
+    /// Loads all seats for a hall with their booking and blocking status for a specific screening.
+    /// </summary>
+    /// <param name="hallId">The hall ID</param>
+    /// <param name="screeningId">The screening ID</param>
+    /// <returns>List of seats with their availability status</returns>
     public List<(Seat seat, bool isBooked, bool isBlocked)> LoadSeatsWithStatus(int hallId, int screeningId)
     {
         List<(Seat seat, bool isBooked, bool isBlocked)> seatsWithStatus = new();
@@ -144,6 +171,15 @@ public class CinemaDataService
         return seatsWithStatus;
     }
     
+    /// <summary>
+    /// Books a seat for a screening.
+    /// </summary>
+    /// <param name="screeningId">The screening ID</param>
+    /// <param name="seatId">The seat ID to book</param>
+    /// <param name="guestName">Guest name (for guest bookings)</param>
+    /// <param name="guestEmail">Guest email (for guest bookings)</param>
+    /// <param name="userId">User ID (for registered user bookings)</param>
+    /// <returns>True if booking was successful, false if seat was already taken</returns>
     public bool BookSeat(int screeningId, int seatId, string guestName = null, string guestEmail = null, int? userId = null)
     {
         using SqliteConnection connection = new SqliteConnection(_connectionString);
@@ -172,6 +208,13 @@ public class CinemaDataService
         }
     }
     
+    /// <summary>
+    /// Temporarily blocks a seat to prevent double booking during the selection process.
+    /// </summary>
+    /// <param name="screeningId">The screening ID</param>
+    /// <param name="seatId">The seat ID to block</param>
+    /// <param name="minutesToBlock">How many minutes to block the seat (default 5)</param>
+    /// <returns>True if blocking was successful</returns>
     public bool BlockSeat(int screeningId, int seatId, int minutesToBlock = 5)
     {
         using SqliteConnection connection = new SqliteConnection(_connectionString);
@@ -197,6 +240,13 @@ public class CinemaDataService
         }
     }
     
+    /// <summary>
+    /// Gets the database ID for a seat at a specific position in a hall.
+    /// </summary>
+    /// <param name="hallId">The hall ID</param>
+    /// <param name="rowNumber">Row number (1-based)</param>
+    /// <param name="seatNumber">Seat number within row (1-based)</param>
+    /// <returns>Seat ID or null if not found</returns>
     public int? GetSeatId(int hallId, int rowNumber, int seatNumber)
     {
         using SqliteConnection connection = new SqliteConnection(_connectionString);
@@ -222,6 +272,9 @@ public class CinemaDataService
         return null;
     }
     
+    /// <summary>
+    /// Removes expired seat blocks from the database.
+    /// </summary>
     public void CleanupExpiredBlocks()
     {
         using SqliteConnection connection = new SqliteConnection(_connectionString);
@@ -232,6 +285,11 @@ public class CinemaDataService
         command.ExecuteNonQuery();
     }
     
+    /// <summary>
+    /// Gets a movie by its ID.
+    /// </summary>
+    /// <param name="movieId">The movie ID</param>
+    /// <returns>Movie object or null if not found</returns>
     public Movie? GetMovieById(int movieId)
     {
         using SqliteConnection connection = new SqliteConnection(_connectionString);
@@ -256,6 +314,11 @@ public class CinemaDataService
         return null;
     }
     
+    /// <summary>
+    /// Gets all bookings for a specific user with complete details.
+    /// </summary>
+    /// <param name="userId">The user ID</param>
+    /// <returns>List of booking details including screening, movie, hall, and seat information</returns>
     public List<(Bookings booking, Screening screening, Movie movie, Hall hall, Seat seat)> GetUserBookings(int userId)
     {
         List<(Bookings booking, Screening screening, Movie movie, Hall hall, Seat seat)> bookings = new();
@@ -335,6 +398,11 @@ public class CinemaDataService
         return bookings;
     }
     
+    /// <summary>
+    /// Gets a movie title by ID, with fallback if not found.
+    /// </summary>
+    /// <param name="movieId">The movie ID</param>
+    /// <returns>Movie title or fallback text if not found</returns>
     public string GetMovieTitle(int movieId)
     {
         Movie? movie = GetMovieById(movieId);

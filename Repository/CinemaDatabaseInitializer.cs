@@ -2,11 +2,18 @@ using Microsoft.Data.Sqlite;
 
 namespace Cinema.Repository;
 
+/// <summary>
+/// Handles database initialization, table creation, and sample data seeding.
+/// Sets up the SQLite database structure for the cinema booking system.
+/// </summary>
 public class CinemaDatabaseInitializer
 {
     private readonly string _connectionString;
     private readonly string _dbPath;
 
+    /// <summary>
+    /// Initializes the database initializer and ensures the Data directory exists.
+    /// </summary>
     public CinemaDatabaseInitializer()
     {
         // check that the Data directory exists
@@ -17,6 +24,9 @@ public class CinemaDatabaseInitializer
         _connectionString = $"Data Source={_dbPath}";
     }
 
+    /// <summary>
+    /// Initializes the database by creating tables and seeding sample data if it's a new database.
+    /// </summary>
     public void InitializeDatabase()
     {
         bool isNewDateBase = !File.Exists(_dbPath);
@@ -35,6 +45,10 @@ public class CinemaDatabaseInitializer
         Console.Write("The database have been created successfully\n");
     }
 
+    /// <summary>
+    /// Creates all necessary tables for the cinema booking system.
+    /// </summary>
+    /// <param name="connection">Open SQLite connection</param>
     private void CreateTables(SqliteConnection connection)
     {
         string[] tables = new[]
@@ -113,6 +127,10 @@ public class CinemaDatabaseInitializer
         Console.Write("All tables created successfully!\n");
     }
 
+    /// <summary>
+    /// Seeds the database with sample data for testing and demonstration.
+    /// </summary>
+    /// <param name="connection">Open SQLite connection</param>
     private void SeedSampleData(SqliteConnection connection)
     {
         using SqliteCommand command = connection.CreateCommand();    
@@ -155,6 +173,10 @@ public class CinemaDatabaseInitializer
         Console.WriteLine("Sample data seeded successfully!");
     }
 
+    /// <summary>
+    /// Generates individual seat records for each hall based on their row and seat configuration.
+    /// </summary>
+    /// <param name="connection">Open SQLite connection</param>
     private void GenerateSeats(SqliteConnection connection)
     {
         using SqliteCommand command = connection.CreateCommand();
@@ -192,6 +214,10 @@ public class CinemaDatabaseInitializer
         Console.Write($"Generated seats for {halls.Count} screen halls\n");
     }
 
+    /// <summary>
+    /// Tests the database by running a sample query and displaying results.
+    /// Useful for verifying the database setup and sample data.
+    /// </summary>
     public void TestDataBase()
     {
         try
