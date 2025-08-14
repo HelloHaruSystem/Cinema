@@ -33,7 +33,7 @@ public class UserMenu : Menu
     {
         { 1, new ViewMoviesCommand(InputHandler, _repository, _dataService) },
         { 2, new BookSeatsUserCommand(InputHandler, _repository, _dataService, _bookingService, _seatMapHelper, _screeningHelper, _authService) },
-        //{ 3, new ViewUserBookingsCommand(InputHandler, _repository, _dataService, _authService) },
+        { 3, new ViewUserBookingsCommand(InputHandler, _repository, _dataService, _authService) },
         { 4, new ViewSeatMapCommand(InputHandler, _repository, _seatMapHelper, _screeningHelper) },
         { 5, new LogoutCommand(InputHandler, _authService) }
     };
