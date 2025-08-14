@@ -2,6 +2,7 @@ using Cinema.Entities;
 using Cinema.Repository;
 using Cinema.Services;
 using Cinema.UserInterface;
+using Cinema.Utils;
 
 namespace Cinema.Commands.Concrete;
 
@@ -9,12 +10,17 @@ public class BookSeatsCommand : BaseCommand
 {
     private readonly ICinemaRepository _repository;
     private readonly CinemaDataService _dataService;
+    private readonly SeatMapHelper _seatMapHelper;
+    private readonly ScreeningHelper _screeningHelper;
 
-    public BookSeatsCommand(UserInputHandler inputHandler, ICinemaRepository repository, CinemaDataService dataService)
+    public BookSeatsCommand(UserInputHandler inputHandler, ICinemaRepository repository, CinemaDataService dataService,
+                            SeatMapHelper seatMapHelper, ScreeningHelper screeningHelper)
         : base (inputHandler)
     {
         _repository = repository;
         _dataService = dataService;
+        _seatMapHelper = seatMapHelper;
+        _screeningHelper = screeningHelper;
     }
 
     public override string Name => "Book Seats (Guest)";
@@ -29,7 +35,7 @@ public class BookSeatsCommand : BaseCommand
         try
         {
             // Show available screenings and let user select
-            Screening? screening = SelectScreening();
+            Screening? screening = _screeningHelper.SelectScreening("to book");
             if (screening == null)
             {
                 Console.Write("No screening selected. Press any key to return...\n> ");
@@ -46,10 +52,10 @@ public class BookSeatsCommand : BaseCommand
                 return true;
             }
 
-            bool[,] seatLayout = CreateSeatLayoutArray(screening.Id, hall);
-            int[,] seatIds = CreateSeatIdArray(screening.Id, hall);
+            bool[,] seatLayout = _seatMapHelper.CreateSeatLayoutArray(screening.Id, hall);
+            int[,] seatIds = _seatMapHelper.CreateSeatIdArray(screening.Id, hall);
             
-            DisplaySeatMapWithArray(hall, seatLayout);
+            _seatMapHelper.DisplaySeatMapWithArray(hall, seatLayout);
             
             // get the number 
             numberOfSeats = GetNumberOfSeats();
@@ -77,50 +83,14 @@ public class BookSeatsCommand : BaseCommand
                 if (i < numberOfSeats - 1)
                 {
                     Console.Write("\nUpdated seat map:\n");
-                    DisplaySeatMapWithArray(hall, seatLayout);
+                    _seatMapHelper.DisplaySeatMapWithArray(hall, seatLayout);
                 }
             }
             
             // Get guest information
             string[] guestNameAndEmail = InputHandler.GetGuestInformation();
-
-            // try to book selected seats
-            bool allSuccessful = true;
-            List<string> failedSeats = new List<string>();
-
-            foreach (int[] selectedSeat in selectedSeats)
-            {
-                int seatId = seatIds[selectedSeat[0] - 1, selectedSeat[1] - 1];
-                if (seatId == 0)
-                {
-                    failedSeats.Add($"Row {selectedSeat[0]}, Seat {selectedSeat[1]} (Invalid seat ID)");
-                    allSuccessful = false;
-                    continue;
-                }
-                
-                bool success = _repository.BookSeat(screening.Id, seatId, guestNameAndEmail[0],  guestNameAndEmail[1]);
-                if (!success)
-                {
-                    failedSeats.Add($"Row {selectedSeat[0]}, Seat {selectedSeat[1]}");
-                    allSuccessful = false;
-                }
-            }
+            ProcessBookings(selectedSeats, seatIds, screening, guestNameAndEmail, numberOfSeats);
             
-            // Display booking results
-            if (allSuccessful)
-            {
-                Console.Write("\nAll bookings successful!\n");
-                Console.Write("Movie: {0}\n", GetMovieTitle(screening.MovieId));
-                Console.Write("Time: {0:dd-MM-yyyy HH:mm}\n", screening.StartTime);
-                Console.Write("Seats booked: \n");
-                foreach (int[] selectedSeat in selectedSeats)
-                {
-                    Console.Write("Row {0}, Seat {1}\n", selectedSeat[0], selectedSeat[1]);
-                }
-                Console.Write("Total Price: {0:F2} DKK\n", screening.Price * numberOfSeats);
-                Console.Write("Name: {0}\n", guestNameAndEmail[0]);
-                Console.Write("Email: {0}\n\n", guestNameAndEmail[1]);
-            }
         }
         catch (Exception ex)
         {
@@ -130,121 +100,47 @@ public class BookSeatsCommand : BaseCommand
         PressAnyKey();
         return true;
     }
-
-    private bool[,] CreateSeatLayoutArray(int screeningId, Hall hall)
+    
+    private void ProcessBookings(List<int[]> selectedSeats, int[,] seatIds, Screening screening, 
+                                string[] guestInfo, int numberOfSeats)
     {
-        // false = available, true = taken
-        bool[,] seatLayout = new bool[hall.Rows, hall.SeatsPerRow];
-        
-        var seatsWithStatus = _dataService.LoadSeatsWithStatus(hall.Id, screeningId);
+        // try to book selected seats
+        bool allSuccessful = true;
+        List<string> failedSeats = new List<string>();
 
-        foreach (var (seat, isBooked, isBlocked) in seatsWithStatus)
+        foreach (int[] selectedSeat in selectedSeats)
         {
-            int arrayRow = seat.RowNumber - 1;
-            int arraySeat = seat.SeatNumber - 1;
-
-            if (arrayRow >= 0 && arrayRow < hall.Rows &&
-                arraySeat >= 0 && arraySeat < hall.SeatsPerRow)
+            int seatId = seatIds[selectedSeat[0] - 1, selectedSeat[1] - 1];
+            if (seatId == 0)
             {
-                seatLayout[arrayRow, arraySeat] = isBooked ||  isBlocked; // true taken
+                failedSeats.Add($"Row {selectedSeat[0]}, Seat {selectedSeat[1]} (Invalid seat ID)");
+                allSuccessful = false;
+                continue;
+            }
+                
+            bool success = _repository.BookSeat(screening.Id, seatId, guestInfo[0],  guestInfo[1]);
+            if (!success)
+            {
+                failedSeats.Add($"Row {selectedSeat[0]}, Seat {selectedSeat[1]}");
+                allSuccessful = false;
             }
         }
-        
-        return seatLayout;
-    }
-    
-    private int[,] CreateSeatIdArray(int screeningId, Hall hall)
-    {
-        int[,] seatIds = new int[hall.Rows, hall.SeatsPerRow];
-    
-        var seatsWithStatus = _dataService.LoadSeatsWithStatus(hall.Id, screeningId);
-    
-        foreach (var (seat, _, _) in seatsWithStatus)
+            
+        // Display booking results
+        if (allSuccessful)
         {
-            int arrayRow = seat.RowNumber - 1;
-            int arraySeat = seat.SeatNumber - 1;
-        
-            if (arrayRow >= 0 && arrayRow < hall.Rows &&
-                arraySeat >= 0 && arraySeat < hall.SeatsPerRow)
+            Console.Write("\nAll bookings successful!\n");
+            Console.Write("Movie: {0}\n", GetMovieTitle(screening.MovieId));
+            Console.Write("Time: {0:dd-MM-yyyy HH:mm}\n", screening.StartTime);
+            Console.Write("Seats booked: \n");
+            foreach (int[] selectedSeat in selectedSeats)
             {
-                seatIds[arrayRow, arraySeat] = seat.Id;
+                Console.Write("Row {0}, Seat {1}\n", selectedSeat[0], selectedSeat[1]);
             }
+            Console.Write("Total Price: {0:F2} DKK\n", screening.Price * numberOfSeats);
+            Console.Write("Name: {0}\n", guestInfo[0]);
+            Console.Write("Email: {0}\n\n", guestInfo[1]);
         }
-    
-        return seatIds;
-    }
-
-    private void DisplaySeatMapWithArray(Hall hall, bool[,] seatLayout)
-    {
-        Console.Write("\nSeat Map for {0}\n", hall.Name);
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("▮");
-        Console.ResetColor();
-        Console.Write(" = Taken | ");
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write("▮");
-        Console.ResetColor();
-        Console.Write(" = Available\n");
-        
-        // column numbers
-        Console.Write("   ");
-        for (int seat = 1; seat <= hall.SeatsPerRow; seat++)
-        {
-            Console.Write($"{seat,2} ");
-        }
-        Console.Write("\n");
-        
-        // rows with seats
-        for (int row = 0; row < hall.Rows; row++)
-        {
-            Console.Write($"{row + 1,2} ");
-
-            for (int seat = 0; seat < hall.SeatsPerRow; seat++)
-            {
-                if (seatLayout[row, seat]) // true = taken
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("▮  ");
-                }
-                else // false = available
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("▮  ");
-                }
-                Console.ResetColor();
-            }
-            Console.Write("\n");
-        }
-    }
-
-    private Screening? SelectScreening()
-    {
-        List<Screening> screenings = _repository.GetAllScreenings()
-            .Where(s => s.StartTime > DateTime.Now)
-            .OrderBy(s => s.StartTime)
-            .ToList();
-
-        if (!screenings.Any())
-        {
-            Console.Write("No upcoming screenings available\n");
-            return null;
-        }
-
-        Console.Write("Available Screenings:\n");
-        for (int i = 0; i < screenings.Count; i++)
-        {
-            Screening screening = screenings[i];
-            string movieTitle = GetMovieTitle(screening.MovieId);
-            Console.Write("{0}. {1}\n", i + 1,  movieTitle);
-            Console.Write("{0:dd-MM-yyyy HH:mm} |   {1:F2} DKK |   Hall {2}\n\n",
-                screening.StartTime, screening.Price, screening.ScreenHallId);
-            Console.Write("\n");
-        }
-
-        Console.Write("Select screening (1-{0}) or 0 to cancel:\n", screenings.Count);
-        int choice = InputHandler.GetMenuChoice(1, screenings.Count);
-        
-        return screenings[choice - 1];
     }
     
     private int GetNumberOfSeats()

@@ -37,6 +37,38 @@ public class UserInputHandler
         
         return choice;
     }
+    
+    public int? GetMenuChoiceWithCancel(int min, int max)
+    {
+        bool validInput = false;
+        int choice = 0;
+
+        while (!validInput)
+        {
+            Console.Write("Enter Choice:\n> ");
+            if (int.TryParse(Console.ReadLine(), out choice))
+            {
+                if (choice == 0)
+                {
+                    return null; // User cancelled
+                }
+                else if (choice >= min && choice <= max)
+                {
+                    validInput = true;
+                }
+                else
+                {
+                    Console.Write("Invalid option. Please enter 0-{0}\n", max);
+                }
+            }
+            else
+            {
+                Console.Write("Invalid input. Please enter a whole number\n");
+            }
+        }
+        
+        return choice;
+    }
 
     public string[] GetGuestInformation()
     {
