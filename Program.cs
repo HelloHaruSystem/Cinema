@@ -15,8 +15,10 @@ class Program
     
     /// <summary>
     /// Application entry point. Sets up dependency injection and starts the main menu.
+    /// if the command argument "dbtest" is given it will try to fetch from the db
+    /// to test the db connection
     /// </summary>
-    /// <param name="args">CCommand line arguments. Use 'dbtest' to run database test only</param>
+    /// <param name="args">Command line arguments. Use 'dbtest' to run database test only</param>
     static void Main(string[] args)
     {
         Console.Clear();
